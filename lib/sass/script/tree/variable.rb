@@ -37,6 +37,11 @@ module Sass::Script::Tree
       dup
     end
 
+    def to_ruby(environment)
+      environment.var_variable(name) ||
+        "(raise Sass::SyntaxError.new('Undefined variable: \"$#{self.name}\".'))"
+    end
+
     protected
 
     # Evaluates the variable.

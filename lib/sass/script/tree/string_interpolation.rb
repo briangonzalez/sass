@@ -69,6 +69,23 @@ module Sass::Script::Tree
       node
     end
 
+    def to_ruby(environment)
+      ruby = "begin\n"
+      before_var = environment.unique_ident
+      ruby << "#{before_var} = #{@before.to_ruby}"
+      mid_var = environment.unique_ident
+      ruby << "#{mid_var} = #{@mid.to_ruby}"
+      ruby << "#{mid_var} = #{mid_var}.value if #{mid_var}.is_a?(Sass::Script::Value::String)"
+      after_var = environment.unique_ident
+      ruby << "#{after_var} = #{@after.to_ruby}"
+
+      ruby << 'Sass::Script::Value::String.new("'
+      ruby << '#{' << before_var << '}'
+      ruby << '#{' << mid_var << '}'
+      ruby << '#{' << after_var << '}'
+      ruby << '")\nend'
+    end
+
     protected
 
     # Evaluates the interpolation.

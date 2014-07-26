@@ -50,6 +50,20 @@ module Sass::Script::Tree
       node
     end
 
+    def to_ruby(environment)
+      operator = "unary_#{@operator}"
+      value_var = environment.unique_ident
+      <<-RUBY.rstrip
+        begin
+          #{value_var} = #{@operand.to_ruby(environment)}
+          #{value_var}.#{operator}
+        rescue NoMethodError => e
+          raise e unless e.name.to_s == #{operator.dump}
+          raise Sass::SyntaxError.new("Undefined unary operation: \\"#{@operator} \#{value_var}\\".")
+        end
+      RUBY
+    end
+
     protected
 
     # Evaluates the operation.

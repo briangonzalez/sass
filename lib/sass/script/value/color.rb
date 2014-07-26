@@ -580,6 +580,10 @@ module Sass::Script::Value
       COLOR_NAMES_REVERSE[rgba]
     end
 
+    def to_ruby
+      "::Sass::Script::Value::Color.new(#{@attrs.inspect}, #{representation.dump}, true)"
+    end
+
     private
 
     def smallest

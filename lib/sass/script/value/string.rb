@@ -93,5 +93,9 @@ module Sass::Script::Value
     def inspect
       String.quote(value)
     end
+
+    def to_ruby
+      "::Sass::Script::Value::String.new(#{value.dump})"
+    end
   end
 end

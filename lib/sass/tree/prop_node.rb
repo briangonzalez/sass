@@ -65,6 +65,15 @@ module Sass::Tree
       super()
     end
 
+    def self.resolved(name, value)
+      prop = new([name.to_s],
+        Sass::Script::Tree::Literal.new(Sass::Script::Value::String.new(value)),
+        :new)
+      prop.resolved_name = name
+      prop.resolved_value = value
+      prop
+    end
+
     # Compares the names and values of two properties.
     #
     # @param other [Object] The object to compare with

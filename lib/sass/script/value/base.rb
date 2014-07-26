@@ -118,6 +118,54 @@ MSG
       Sass::Script::Value::String.new("#{to_s}/#{other.to_s}")
     end
 
+    # The SassScript `/` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def times(other)
+      undefined(:times, other)
+    end
+
+    # The SassScript `%` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def mod(other)
+      undefined(:mod, other)
+    end
+
+    # The SassScript `>` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def gt(other)
+      undefined(:gt, other)
+    end
+
+    # The SassScript `>=` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def gte(other)
+      undefined(:gte, other)
+    end
+
+    # The SassScript `<` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def lt(other)
+      undefined(:lt, other)
+    end
+
+    # The SassScript `<=` operation.
+    #
+    # @param other [Value] The right-hand side of the operator
+    # @raise [Script::SyntaxError] An error explaining that this operation is unsupported.
+    def lte(other)
+      undefined(:lte, other)
+    end
+
     # The SassScript unary `+` operation (e.g. `+$a`).
     #
     # @param other [Value] The right-hand side of the operator
@@ -235,6 +283,13 @@ MSG
     # @return [Value] This value
     def _perform(environment)
       self
+    end
+
+    private
+
+    def undefined(operation, other)
+      raise Sass::SyntaxError.new(
+        "Undefined operation: \"#{inspect} #{operation} #{other.inspect}\".")
     end
   end
 end

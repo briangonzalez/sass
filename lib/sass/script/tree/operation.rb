@@ -53,6 +53,25 @@ module Sass::Script::Tree
       node
     end
 
+    def to_ruby(environment)
+      if @operator != :and && @operator != :or
+        value2_var = environment.unique_ident
+        return "#{@operand1.to_ruby(environment)}.#{@operator}(#{@operand2.to_ruby(environment)})"
+      end
+
+      ruby = "begin\n"
+      value1_var = environment.unique_ident
+      ruby << "#{value1_var} = #{@operand1.to_ruby(environment)}\n"
+
+      if @operator == :and
+        ruby << "#{value1_var}.to_bool ? #{@operand2.to_ruby(environment)} : #{value1_var}"
+      else # @operator == :or
+        ruby << "#{value1_var}.to_bool ? #{value1_var} : #{@operand2.to_ruby(environment)}"
+      end
+
+      return ruby + "\nend"
+    end
+
     protected
 
     # Evaluates the operation.

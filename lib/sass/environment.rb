@@ -80,6 +80,11 @@ module Sass
     # Sass::Callable
     inherited_hash_reader :function
 
+    inherited_hash_reader :fn
+    inherited_hash_writer :fn
+
+    inherited_hash_writer :var
+
     # @param options [{Symbol => Object}] The options hash. See
     #   {file:SASS_REFERENCE.md#sass_options the Sass options documentation}.
     # @param parent [Environment] See \{#parent}
@@ -87,6 +92,38 @@ module Sass
       @parent = parent
       @options = options || (parent && parent.options) || {}
       @stack = Sass::Stack.new if @parent.nil?
+      @ident_count = 0
+      @idents = {}
+    end
+
+    def unique_ident(name = nil)
+      return global_env.unique_ident(name) unless global?
+      @ident_count += 1
+      "_s_#{(name || 'i').to_s.gsub(/[^a-zA-Z0-9_]/, '_')}_#{@ident_count}"
+    end
+
+    def fn_variable(name)
+      return unless (ident = fn(name))
+      return is_fn_global?(name) ? "@#{ident}" : ident
+    end
+
+    def declare_fn(name)
+      ident = set_local_fn(name, unique_ident("fn_#{name}"))
+      global? ? "@#{ident}" : ident
+    end
+
+    def var_variable(name)
+      return unless (ident = var(name))
+      return is_var_global?(name) ? "@#{ident}" : ident
+    end
+
+    def declare_var(name)
+      ident = set_local_var(name, unique_ident("var_#{name}"))
+      global? ? "@#{ident}" : ident
+    end
+
+    def declare_global_var(name)
+      global_env.declare_var(name)
     end
 
     # Returns whether this is the global environment.

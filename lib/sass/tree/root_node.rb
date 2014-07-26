@@ -33,7 +33,10 @@ module Sass
 
       def css_tree
         Visitors::CheckNesting.visit(self)
-        result = Visitors::Perform.visit(self)
+        ruby = Visitors::ToRuby.visit(self)
+        puts ruby
+        result = eval(ruby)
+        result.options = options
         Visitors::CheckNesting.visit(result) # Check again to validate mixins
         result, extends = Visitors::Cssize.visit(result)
         Visitors::Extend.visit(result, extends)

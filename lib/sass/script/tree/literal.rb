@@ -35,6 +35,10 @@ module Sass::Script::Tree
       value.inspect
     end
 
+    def to_ruby(environment)
+      value.to_ruby
+    end
+
     protected
 
     def _perform(environment)

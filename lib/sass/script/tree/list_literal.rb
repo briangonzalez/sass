@@ -55,6 +55,11 @@ module Sass::Script::Tree
       "(#{elements.map {|e| e.inspect}.join(separator == :space ? ' ' : ', ')})"
     end
 
+    def to_ruby(environment)
+      "Sass::Script::Value::List.new(" +
+        "[#{elements.map {|e| e.to_ruby(environment)}}], #{separator.inspect})"
+    end
+
     protected
 
     def _perform(environment)

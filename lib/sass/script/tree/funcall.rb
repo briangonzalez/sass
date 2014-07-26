@@ -112,6 +112,17 @@ module Sass::Script::Tree
       node
     end
 
+    def to_ruby(environment)
+      # TODO: support splat and named args
+      if (variable = environment.fn_variable(name))
+        "#{variable}[" + args.map {|n| n.to_ruby(environment)}.join(', ') + "]"
+      else
+        "Sass::Script::Value::String.new(#{name.dump[0...-1]}(\#{" +
+          args.map {|n| n.to_ruby(environment)}.join('}, #{') +
+          "})\")"
+      end
+    end
+
     protected
 
     # Evaluates the function call.
