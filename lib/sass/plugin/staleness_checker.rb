@@ -131,6 +131,7 @@ module Sass
       def mtime(uri, importer)
         @mtimes[[uri, importer]] ||=
           begin
+            return unless importer
             mtime = importer.mtime(uri, @options)
             if mtime.nil?
               with_dependency_cache {|cache| cache.delete([uri, importer])}
